@@ -5,17 +5,17 @@ function Endpoint:Send(url, data, headers)
     local value = {}
 
     PerformHttpRequest(url, function(_, __, ___)
-        function value:getError() return _ end
-        function value:getData()
-            local resp = {}
+        value.error = _
+        value.result = ___
 
-            function resp:json() return json.decode(__) end
-            function resp:number() return tonumber(__) end
-            setmetatable(resp, {__tostring = function() return __ end})
+        function value:json() return json.decode(__) end
+        function value:number() return tonumber(__) end
 
-            return resp
-        end
-        function value:getResult() return ___ end
+        setmetatable(value, {
+            __tostring = function()
+                return __
+            end
+        })
     end, data, headers)
 
     repeat
@@ -23,13 +23,9 @@ function Endpoint:Send(url, data, headers)
         timeout = timeout + 1
 
         if timeout == Config.timeout then
-            function value:getError()
-                return "endpoint_timeout_failure"
-            end
-
-            return value
+            return {error = "endpoint_timeout"}
         end
-    until value.getData ~= nil
+    until value.error ~= nil
 
     return value
 end
