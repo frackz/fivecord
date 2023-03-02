@@ -1,0 +1,6 @@
+config = {
+    default = {
+        socket = {},
+        events = {}
+    }
+}
