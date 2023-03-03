@@ -18,6 +18,10 @@ addSetup(function(value)
         return info.user.discriminator
     end
 
+    function value:getUsername()
+        return value:getName().."#"..value:getTag()
+    end
+
     function value:getAvatar()
         return 'https://cdn.discordapp.com/avatars/'..value:getId()..'/'..info.user.avatar..'.png'
     end
