@@ -1,6 +1,6 @@
 Socket = class()
 
-local encode, cord = json.encode, exports["fivecord2"]
+local encode, cord = json.encode, exports["fivecord"]
 
 local HELLO, RECONNECT, INVALID, EVENT, HEARTBEAT_ACK, HEARTBEAT = 10, 7, 9, 0, 11, 1
 
@@ -63,6 +63,10 @@ function Socket:_init(token, client)
     end
 
     function close(err)
+        if err == 4004 then
+            return print("Gateway closed, bot information is invalid")
+        end
+
         self:_reconnect()
         print("Gateway closed with error code: ".. err.. ". Now reconnecting")
     end

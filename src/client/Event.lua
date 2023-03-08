@@ -1,12 +1,14 @@
 local insert, EventHandlers, EventNames = table.insert, {}, {
     ['READY'] = "ready",
-    ['heartbeatRecieved'] = 'heartbeatRecieved'
+    ['heartbeatRecieved'] = 'heartbeatRecieved',
+    ['MESSAGE_CREATE'] = "messageCreate"
 }
 
 Event = class()
 
-function Event:_init()
+function Event:_init(client)
     self._events = {}
+    self._client = client
 end
 
 function Event:emit(name, ...)
@@ -22,7 +24,7 @@ function Event:emit(name, ...)
     end
 
     for _, v in pairs(self._events[name]) do
-        v(EventHandlers[name](...))
+        v(EventHandlers[name](..., self._client))
     end
 end
 
@@ -53,4 +55,8 @@ end
 
 function EventHandlers:heartbeatRecieved()
     return
+end
+
+function EventHandlers.messageCreate(data, client)
+    return Message(data, client)
 end

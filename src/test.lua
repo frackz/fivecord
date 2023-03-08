@@ -8,4 +8,12 @@ CreateThread(function()
     api:on('heartbeatRecieved', function()
         print("A heartbeat was recieved.")
     end)
+
+    api:getChannel('1083110988984881243'):setName('bob')
+    api:on('messageCreate', function(msg)
+        msg:getChannel():setName(msg:getContent())
+        --msg:delete()
+    end)
 end)
+
+api:run()
