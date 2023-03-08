@@ -5,6 +5,11 @@ function Client:_init(token)
     self._api = API(token, self)
     self._socket = Socket(token, self)
     self._events = Event()
+
+    self._events:handle('ready', function(data)
+        self.bot = User(data.user)
+        self._socket.session = data.session_id
+    end)
 end
 
 function Client:setToken(token)

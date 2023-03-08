@@ -2,10 +2,10 @@ local api = Client('MTA3NjU2MDM4MjkxMjYzNDkzMA.GXWDT2.1FLN-9vy5OH9QaNenLeJQggSo3
 
 CreateThread(function()
     api:on('ready', function ()
-        print("REQADY?api?")
+        print("Bot is now ready "..api.bot:getName().."#"..api.bot:getTag())
     end)
 
-    api:on('heartbeatRecieved', function(asd)
-        print("Vi fik et heartbeat ")
+    api:on('heartbeatRecieved', function()
+        print("A heartbeat was recieved.")
     end)
 end)

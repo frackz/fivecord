@@ -2,6 +2,8 @@ Socket = class()
 
 local encode, cord = json.encode, exports["fivecord2"]
 
+local HELLO, RECONNECT, INVALID, EVENT, HEARTBEAT_ACK, HEARTBEAT = 10, 7, 9, 0, 11, 1
+
 function Socket:_init(token, client)
     self._token = token
     self._interval = nil
@@ -15,48 +17,47 @@ function Socket:_init(token, client)
         self._reconnect = reconnect
     end
 
-    function err()
-        print("ERROR")
+    function err(error)
+        print("Gateway error "..error)
     end
 
     function message(msg)
-        local op, d = msg.op, msg.d
+        local op, d, t = msg.op, msg.d, msg.t
         local heartbeat = (d or {heartbeat_interval = nil}).heartbeat_interval
         
         if msg.s ~= nil then self._seq = msg.s
         else self._seq = nil end
         
-        if op == 10 then
-            if heartbeat then self._interval = heartbeat end
-
-            CreateThread(function()
-                self:startHeartbeat()
-            end)
+        if op == HELLO then
+            if heartbeat then
+                self._interval = heartbeat
+            end
 
             if self._session then
                 self:resume()
-            else
-                self:identity()
             end
-        elseif op == 7 then
-            print("Requested reconnecting")
+
+            self:startHeartbeat()
+            return self:identity()
+
+        elseif op == RECONNECT then
             self._reconnect()
-        elseif op == 9 then
+
+        elseif op == INVALID then
             if d and self._session then
-                self:resume()
-            else
-                Wait(math.random(1000, 5000))
-                self:identity()
+                return self:resume()
             end
-        elseif op == 0 then
-            print("Event fired "..msg["t"])
-            if msg["t"] == "READY" then
-                self._session = d.session_id
-                client._events:emit(msg["t"], msg["d"])
-            end
-        elseif op == 11 then
+
+            Wait(math.random(1000, 5000))
+            self:identity()
+
+        elseif op == EVENT then
+            client._events:emit(t, d)
+
+        elseif op == HEARTBEAT_ACK then
             client._events:emit('heartbeatRecieved')
-        elseif op == 1 then
+
+        elseif op == HEARTBEAT then
             self:heartbeat()
         end
     end
@@ -74,33 +75,18 @@ function Socket:heartbeat()
 end
 
 function Socket:startHeartbeat()
-    while true do
-        self:heartbeat()
-        Wait(self._interval)
-    end
+    CreateThread(function()
+        while true do
+            self:heartbeat()
+            Wait(self._interval)
+        end
+    end)
 end
 
-function Socket:identity()
-    self:send(encode({
-        ['op'] = 2,
-        ['d'] = {
-            ['token'] = self._token,
-            ['properties'] = {
-                ['$os'] = self._platform,
-                ['$browser'] = "fivecord",
-                ['$device'] = "fivecord"
-            }
-        }
-    }))
+function Socket:identity() -- identity payload
+    self:send(encode({ ['op'] = 2, ['d'] = { ['token'] = self._token,  ['properties'] = { ['$os'] = self._platform, ['$browser'] = "fivecord", ['$device'] = "fivecord" }}}))
 end
 
-function Socket:resume()
-    self:send(encode({
-        op = 6,
-        d = {
-            token = self._token,
-            session_id = self._session,
-            seq = self._seq
-        }
-    }))
+function Socket:resume() -- resume payload
+    self:send(encode({ op = 6, d = { token = self._token, session_id = self._session, seq = self._seq }}))
 end

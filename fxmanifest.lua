@@ -7,12 +7,14 @@ description 'Example resource'
 version '1.0.0'
 
 server_scripts {
-    'src/endpoint.lua',
-    'src/class.lua',
-    'src/socket.js',
+    'src/Endpoints.lua',
+    'src/Class.lua',
+    'src/Socket.js',
     'src/client/API.lua',
     'src/client/Socket.lua',
     'src/client/Event.lua',
+    'src/client/User.lua',
     'src/client/Client.lua',
-    'src/test.lua'
+
+    'src/Test.lua'
 }

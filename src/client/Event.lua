@@ -14,6 +14,7 @@ function Event:emit(name, ...)
         if not EventNames[name] then
             return
         end
+
         name = EventNames[name]
         if not self._events[name] then
             return
@@ -26,32 +27,28 @@ function Event:emit(name, ...)
 end
 
 function Event:handle(name, callback)
-    if not self:exist(name, true) then
+    if not self:exist(name) then
         return false, "invalid_event"
     end
 
-    if not self._events[name] then
-        self._events[name] = {callback}
-    else
-        insert(self._events[name], callback)
+    if self._events[name] then
+        return insert(self._events[name], callback)
     end
+    self._events[name] = {callback}
 end
 
-function Event:exist(name, after)
-    if not after then
-        return EventNames[name] ~= nil
-    else
-        for _, v in pairs(EventNames) do
-            if v == name then
-                return true
-            end
+function Event:exist(name)
+    for _, v in pairs(EventNames) do
+        if v == name then
+            return true
         end
-        return false
     end
+
+    return false
 end
 
-function EventHandlers.ready(self, data)
-    return
+function EventHandlers.ready(data)
+    return data
 end
 
 function EventHandlers:heartbeatRecieved()
