@@ -15,6 +15,7 @@ server_scripts {
     'src/client/Socket.lua',
     'src/client/Event.lua',
     'src/client/User.lua',
+    'src/client/Guild.lua',
     'src/client/Message.lua',
     'src/client/Channel.lua',
     'src/client/Client.lua',

@@ -7,6 +7,7 @@ function Client:_init(token)
     self._cache = {
         guilds = {}
     }
+    self._timeout = 250
 
     self._events:handle('ready', function(data)
         self.bot = User(data.user)
@@ -76,12 +77,16 @@ function Client:setToken(token)
     self._token = token
 end
 
-function Client:getChannel(channel)
-    local status, data = self._api:getChannel(channel)
+function Client:getGuild(id)
+    local data, amount = self._cache.guilds[id], 0
     if data == nil then
-        return false, "invalid_channel"
+        repeat Wait(0) amount = amount + 1 until self._cache.guilds[id] or amount == timeout
+        if amount == timeout then
+            return false, "invalid_guild_or_slow_client"
+        end
+        data = self._cache.guilds[id]
     end
-    return Channel(data, self)
+    return Guild(data, self)
 end
 
 function Client:on(...)
