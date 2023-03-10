@@ -5,7 +5,7 @@ function Client:_init(token)
     self._api = API(token, self)
     self._events = Event(self)
     self._cache = {
-        guilds = Cache()
+        guilds = {}
     }
 
     self._events:handle('ready', function(data)
@@ -14,18 +14,40 @@ function Client:_init(token)
     end)
 
     self._events:handle('guildCreate', function(data)
-        --self._cache.guilds:define(data.id, {
-        --    channels = data.channels
-        --})
+        local channels = {}
+        for _,v in pairs(data.channels) do
+            channels[v.id] = v
+        end
+
+        self._cache.guilds[data.id] = {
+            channels = channels, -- will be updated
+            raw = data -- will be updated
+        }
+    end)
+
+    self._events:handle('guildUpdate', function(data)
+        print(json.encode(data)) 
+        if not self._cache.guilds[data.id] then
+            return print("Guild is not cached!")
+        end
+
+        self._cache.guilds[data.id].raw = data
     end)
 
     self._events:handle('channelCreate', function(data)
-        if not self._cache.guilds:get(data.guild_id) then
-            return print("Guild not cached")
+        if not self._cache.guilds[data.guild_id] then
+            return print("Guild is not cached")
+        end
+        
+        self._cache.guilds[data.guild_id].channels[data.id] = data
+    end)
+
+    self._events:handle('channelUpdate', function(data)
+        if not self._cache.guilds[data.guild_id] or not self._cache.guilds[data.guild_id].channels[data.id] then
+            return print("Guild or channel is not cached")
         end
 
-        --self._cache.guilds:set(data.id)
-        print(json.encode(data))
+        self._cache.guilds[data.guild_id].channels[data.id] = data
     end)
 end
 

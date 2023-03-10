@@ -2,9 +2,12 @@ local insert, EventHandlers, EventNames = table.insert, {}, {
     ['READY'] = "ready",
     ['heartbeatRecieved'] = 'heartbeatRecieved',
     ['MESSAGE_CREATE'] = "messageCreate",
-    ['GUILD_CREATE'] = "guildCreate",
-    ['CHANNEL_CREATE'] = "channelCreate"
 
+    -- Caching
+    ['GUILD_CREATE'] = "guildCreate",
+    ['CHANNEL_CREATE'] = "channelCreate",
+    ['CHANNEL_UPDATE'] = "channelUpdate",
+    ['GUILD_UPDATE'] = "guildUpdate"
 }
 
 Event = class()
@@ -60,7 +63,15 @@ function EventHandlers.guildCreate(data)
     return data
 end
 
+function EventHandlers.guildUpdate(data)
+    return data
+end
+
 function EventHandlers.channelCreate(data)
+    return data
+end
+
+function EventHandlers.channelUpdate(data)
     return data
 end
 

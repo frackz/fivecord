@@ -52,6 +52,7 @@ function Socket:_init(token, client)
             self:identity()
 
         elseif op == EVENT then
+            print(t)
             client._events:emit(t, d)
 
         elseif op == HEARTBEAT_ACK then
