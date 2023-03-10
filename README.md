@@ -1,4 +1,4 @@
-# 🔌 FiveCord (FiveM discord wrapepr)
+# 🔌 FiveCord (FiveM discord wrapper)
 A FiveM discord wrapper coded in Lua and Javascript.
 For bot developers, inside FiveM
 
