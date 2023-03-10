@@ -4,10 +4,13 @@ local insert, EventHandlers, EventNames = table.insert, {}, {
     ['MESSAGE_CREATE'] = "messageCreate",
 
     -- Caching
-    ['GUILD_CREATE'] = "guildCreate",
     ['CHANNEL_CREATE'] = "channelCreate",
     ['CHANNEL_UPDATE'] = "channelUpdate",
-    ['GUILD_UPDATE'] = "guildUpdate"
+    ['CHANNEL_DELETE'] = "channelDelete",
+
+    ['GUILD_CREATE'] = "guildCreate",
+    ['GUILD_UPDATE'] = "guildUpdate",
+    ['GUILD_DELETE'] = "guildDelete",
 }
 
 Event = class()
@@ -67,11 +70,19 @@ function EventHandlers.guildUpdate(data)
     return data
 end
 
+function EventHandlers.guildDelete(data)
+    return data
+end
+
 function EventHandlers.channelCreate(data)
     return data
 end
 
 function EventHandlers.channelUpdate(data)
+    return data
+end
+
+function EventHandlers.channelDelete(data)
     return data
 end
 

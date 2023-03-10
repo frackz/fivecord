@@ -26,12 +26,20 @@ function Client:_init(token)
     end)
 
     self._events:handle('guildUpdate', function(data)
-        print(json.encode(data)) 
         if not self._cache.guilds[data.id] then
             return print("Guild is not cached!")
         end
 
         self._cache.guilds[data.id].raw = data
+    end)
+
+    self._events:handle('guildDelete', function(data)
+        local guild = self._cache.guilds[data.id]
+        if not guild then
+            return print("Guild is not cached")
+        end
+
+        self._cache.guilds[data.id] = nil
     end)
 
     self._events:handle('channelCreate', function(data)
@@ -48,6 +56,15 @@ function Client:_init(token)
         end
 
         self._cache.guilds[data.guild_id].channels[data.id] = data
+    end)
+
+    self._events:handle('channelDelete', function(data)
+        local guild = self._cache.guilds[data.guild_id]
+        if not guild then
+            return print("Guild is not cached")
+        end
+
+        guild.channels[data.id] = nil
     end)
 end
 
