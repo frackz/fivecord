@@ -33,7 +33,9 @@ function Event:emit(name, ...)
     end
 
     for _, v in pairs(self._events[name]) do
-        v(EventHandlers[name](..., self._client))
+        local resp = EventHandlers[name](..., self._client)
+        if resp == "DO_NOT_CALL" then return end
+        v(resp)
     end
 end
 
@@ -91,5 +93,8 @@ function EventHandlers:heartbeatRecieved()
 end
 
 function EventHandlers.messageCreate(data, client)
+    if data.content == "" then
+        return "DO_NOT_CALL"
+    end
     return Message(data, client)
 end

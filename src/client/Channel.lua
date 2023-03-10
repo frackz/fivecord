@@ -42,6 +42,16 @@ function Channel:setParent(id)
     })
 end
 
+function Channel:send(data)
+    if type(data) == "string" then
+        print(self._api:sendMessage(self:getId(), {
+            content = data
+        }))
+    else
+        self._api:sendMessage(self:getId(), data)
+    end
+end
+
 function Channel:delete()
     return self._api:deleteChannel(self:getId())
 end

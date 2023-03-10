@@ -10,28 +10,34 @@ end
 
 function API:_request(encode, method, endpoint, payload, d)
     local status, data
-
+    local amount = 0
+    
     if not d then d = ''
     else d = json.encode(d) end
+
+    for k,v in pairs(payload or {}) do
+        amount = amount + 1
+    end
+    
 
     payload = payload or {}
     payload['Authorization'] = 'Bot '..self._token
     payload['Content-Type'] = 'application/json'
+    payload['Content-Length'] = tonumber(amount)
+
+    print(d)
+    print(json.encode(payload))
 
     PerformHttpRequest(URL .. endpoint, function (_, __, ___)
         if ___['x-ratelimit-remaining'] == '0' then
             Wait(___['x-ratelimit-reset-after'] * 1000)
-        end
-
-        if _ == 429 then
-            print(json.encode(___))
         end
         Wait(delay)
         status, data = _, __
     end, method, d, payload)
 
     repeat Wait(1) until status ~= nil
-    print(status, endpoint)
+
     if not encode then
         return status, data
     else
@@ -57,6 +63,21 @@ end
 
 function API:deleteChannel(channel)
     return self:_request(true, "DELETE", format(endpoints.CHANNEL, channel))
+end
+
+
+-- Messages
+function API:sendMessage(channel, data)
+    print(format(endpoints.MESSAGES, channel) )
+	return self:_request(true, "POST", format(endpoints.MESSAGES, channel), {}, data)
+end
+
+function API:pinMessage(channel, message)
+    return self:_request(true, "PUT", format(endpoints.PIN, channel, message))
+end
+
+function API:unpinMessage(channel, message)
+    return self:_request(true, "DELETE", format(endpoints.PIN, channel, message))
 end
 
 function API:deleteMessage(channel, message)

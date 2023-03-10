@@ -3,11 +3,14 @@ Message = class()
 function Message:_init(data, client)
     self._data = data
     self._client = client
+    self._api = client._api
+
+    self._channel = data.channel_id
 end
 
 -- Getters
 function Message:getChannel()
-    return self._client:getChannel(self._data.channel_id)
+    return self._client:getGuild(self._data.guild_id):getChannel(self._data.channel_id)
 end
 
 function Message:getGuild()
@@ -31,10 +34,19 @@ function Message:getId()
 end
 
 -- Maintain
+function Message:pin()
+    self._api:pinMessage(self._channel, self:getId())
+end
+
+function Message:unpin()
+    self._api:unpinMessage(self._channel, self:getId())
+
+end
+
 function Message:edit()
 
 end
 
 function Message:delete()
-    self._client._api:deleteMessage(self:getChannel():getId(), self:getId())
+    self._api:deleteMessage(self._channel, self:getId())
 end
