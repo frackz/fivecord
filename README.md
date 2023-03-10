@@ -14,4 +14,12 @@ FiveCord is developed, and maintained by frackz. If you have any questions/probl
 +-------------+-----------------+----------------+---------+--------------+---------+----------+---------------+--------------+------------------+----------+--------+----------+---------+--------------+
 ```
 
-> Created and maintained by frackz.
+## Installation
+Please follow this guide: (link here lol)
+
+## Documentation
+Documentation can be found at: (link here)
+
+## Thanks.
+> Huge inspiration from [Discordia](https://github.com/SinisterRectus/Discordia)
+> Startup with gateway [Fastcord](https://github.com/dskprt/fastcord)
