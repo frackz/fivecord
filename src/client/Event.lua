@@ -1,7 +1,10 @@
 local insert, EventHandlers, EventNames = table.insert, {}, {
     ['READY'] = "ready",
     ['heartbeatRecieved'] = 'heartbeatRecieved',
-    ['MESSAGE_CREATE'] = "messageCreate"
+    ['MESSAGE_CREATE'] = "messageCreate",
+    ['GUILD_CREATE'] = "guildCreate",
+    ['CHANNEL_CREATE'] = "channelCreate"
+
 }
 
 Event = class()
@@ -50,6 +53,14 @@ function Event:exist(name)
 end
 
 function EventHandlers.ready(data)
+    return data
+end
+
+function EventHandlers.guildCreate(data)
+    return data
+end
+
+function EventHandlers.channelCreate(data)
     return data
 end
 
