@@ -3,7 +3,7 @@ A FiveM discord wrapper coded in Lua and Javascript.
 For bot developers, inside FiveM
 
 ## Development
-FiveCord is developed, and maintained by frackz. If you have any questions/problems or suggestions, please contact us at the [discord](1082699748668096643)
+FiveCord is developed, and maintained by frackz. If you have any questions/problems or suggestions, please contact us at the [discord](https://discord.gg/JTPkQTqRCx)
 
 ## Features / Support
 ```
