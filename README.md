@@ -21,5 +21,4 @@ Please follow this guide: (link here lol)
 Documentation can be found at: (link here)
 
 ## Thanks.
-> Huge inspiration from [Discordia](https://github.com/SinisterRectus/Discordia) <br/>
-> Startup with gateway [Fastcord](https://github.com/dskprt/fastcord)
+I want to thank the creators of [Discordia](https://github.com/SinisterRectus/Discordia) and [Fastcord](https://github.com/dskprt/fastcord), it gave me huge inspiration, and also a place where i can look if there's errors.
