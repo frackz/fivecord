@@ -10,8 +10,6 @@ function Guild:getName()
     return self._data.name
 end
 
-
-
 function Guild:getChannel(id)
     if not self._data.channels[id] then
         return false, "invalid_channel"

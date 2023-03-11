@@ -10,6 +10,7 @@ end
 
 -- Getters
 function Message:getChannel()
+    print("BOB")
     return self._client:getGuild(self._data.guild_id):getChannel(self._data.channel_id)
 end
 
@@ -48,22 +49,31 @@ function Message:unpin()
 end
 
 function Message:reply(data)
-    local channel = self:getChannel():getId()
     if type(data) == "string" then
-        return self._api:sendMessage(channel, {
-            content = data,
-            message_reference = {message_id = self:getId()}
+        data = {content = data}
+    end
+
+    data['message_reference'] = {message_id = self:getId()}
+
+    local status, data = self._api:sendMessage(self._channel, data)
+    if status ~= 200 then
+        return false, data
+    end
+
+    return Message(data, self._client)
+end
+
+function Message:edit(data)
+    local channel = self._channel
+    if type(data) == "string" then
+        return self._api:editMessage(channel, self:getId(), {
+            content = data
         })
     else
-        data['message_reference'] = {message_id = self:getId()}
-        return self._api:sendMessage(channel, data)
+        return self._api:editMessage(channel, self:getId(), data)
     end
 end
 
-function Message:edit()
-
-end
-
 function Message:delete()
-    self._api:deleteMessage(self._channel, self:getId())
+    return self._api:deleteMessage(self._channel, self:getId())
 end

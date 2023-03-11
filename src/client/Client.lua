@@ -4,9 +4,7 @@ function Client:_init(token)
     self._token = token
     self._api = API(token, self)
     self._events = Event(self)
-    self._cache = {
-        guilds = {}
-    }
+    self._cache = { guilds = {} }
     self._timeout = 250
 
     self._events:handle('ready', function(data)
@@ -16,7 +14,7 @@ function Client:_init(token)
 
     self._events:handle('guildCreate', function(data)
         local channels = {}
-        for _,v in pairs(data.channels) do
+        for _, v in pairs(data.channels) do
             channels[v.id] = v
         end
 

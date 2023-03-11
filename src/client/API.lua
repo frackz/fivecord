@@ -61,6 +61,10 @@ function API:unpinMessage(channel, message)
     return self:_request("DELETE", format(endpoints.PIN, channel, message))
 end
 
+function API:editMessage(channel, message, data)
+    return self:_request("PATCH", format(endpoints.MESSAGE, channel, message), {}, data)
+end
+
 function API:deleteMessage(channel, message)
     return self:_request("DELETE", format(endpoints.MESSAGE, channel, message))
 end

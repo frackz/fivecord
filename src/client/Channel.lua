@@ -44,12 +44,15 @@ end
 
 function Channel:send(data)
     if type(data) == "string" then
-        print(self._api:sendMessage(self:getId(), {
-            content = data
-        }))
-    else
-        self._api:sendMessage(self:getId(), data)
+        data = {content = data}
     end
+
+    local status, data = self._api:sendMessage(self:getId(), data)
+    if status ~= 200 then
+        return false, data
+    end
+
+    return Message(data, self._client)
 end
 
 function Channel:delete()
