@@ -32,10 +32,13 @@ function Event:emit(name, ...)
         end
     end
 
-    for _, v in pairs(self._events[name]) do
+    for i, v in pairs(self._events[name]) do
         local resp = EventHandlers[name](..., self._client)
         if resp == "DO_NOT_CALL" then return end
-        v(resp)
+        
+        if not pcall(v, resp) then
+            table.remove(self._events[name], i)
+        end
     end
 end
 

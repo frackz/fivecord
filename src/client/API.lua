@@ -17,7 +17,7 @@ function API:_request(method, endpoint, payload, query)
     payload = payload or {}
     payload['Authorization'] = 'Bot '..self._token
     payload['Content-Type'] = 'application/json'
-    payload['User-Agent'] = "FiveCord (https://github.com/frackz/fivecord, 1.0)"
+    payload['User-Agent'] = "FiveCord (https://github.com/frackz/fivecord)"
 
     PerformHttpRequest(URL .. endpoint, function (_, __, ___)
         status, data = _, __
