@@ -21,6 +21,10 @@ function Message:getUser()
     return User(self._data.author)
 end
 
+function Message:getAuthor()
+    return self:getUser()
+end
+
 function Message:getContent()
     return self._data.content
 end
@@ -41,6 +45,19 @@ end
 function Message:unpin()
     self._api:unpinMessage(self._channel, self:getId())
 
+end
+
+function Message:reply(data)
+    local channel = self:getChannel():getId()
+    if type(data) == "string" then
+        return self._api:sendMessage(channel, {
+            content = data,
+            message_reference = {message_id = self:getId()}
+        })
+    else
+        data['message_reference'] = {message_id = self:getId()}
+        return self._api:sendMessage(channel, data)
+    end
 end
 
 function Message:edit()
