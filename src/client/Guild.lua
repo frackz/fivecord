@@ -4,10 +4,36 @@ function Guild:_init(data, client)
     self._data = data
     self._client = client
     self._api = client._api
+
+end
+
+function Guild:getId()
+    return self._data.raw.id
 end
 
 function Guild:getName()
-    return self._data.name
+    return self._data.raw.name
+end
+
+function Guild:setName(name)
+    return self._api:modifyGuild(self:getId(), {
+        name = name
+    })
+end
+
+function Guild:getUser(id)
+    local member = self._data.members[id]
+    if member then
+        return User(member, self._client)
+    else
+        local status, data = self._client._api:getGuildMember(self:getId(), id)
+        if data then
+            self._data.members[id] = data
+            return User(data, self._client)
+        else
+            return false, "invalid_user"
+        end
+    end
 end
 
 function Guild:getChannel(id)

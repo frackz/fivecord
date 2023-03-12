@@ -47,6 +47,14 @@ function API:deleteChannel(channel)
     return self:_request("DELETE", format(endpoints.CHANNEL, channel))
 end
 
+-- Guild
+function API:getGuildMember(guild, member)
+    return self:_request("GET", format(endpoints.GUILD_MEMBER, guild, member))
+end
+
+function API:modifyGuild(guild, payload)
+    return self:_request("PATCH", format(endpoints.GUILD, guild), {}, payload)
+end
 
 -- Messages
 function API:sendMessage(channel, data)

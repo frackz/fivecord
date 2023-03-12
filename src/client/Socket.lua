@@ -28,6 +28,8 @@ function Socket:_init(token, client)
         if msg.s ~= nil then self._seq = msg.s
         else self._seq = nil end
         
+        client._events:emit('SOCKET_MESSAGE', msg)
+
         if op == HELLO then
             if heartbeat then
                 self._interval = heartbeat
@@ -55,7 +57,7 @@ function Socket:_init(token, client)
             client._events:emit(t, d)
 
         elseif op == HEARTBEAT_ACK then
-            client._events:emit('heartbeatRecieved')
+            client._events:emit('HEARTBEAT')
 
         elseif op == HEARTBEAT then
             self:heartbeat()

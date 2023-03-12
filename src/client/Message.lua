@@ -10,7 +10,6 @@ end
 
 -- Getters
 function Message:getChannel()
-    print("BOB")
     return self._client:getGuild(self._data.guild_id):getChannel(self._data.channel_id)
 end
 
@@ -19,7 +18,7 @@ function Message:getGuild()
 end
 
 function Message:getUser()
-    return User(self._data.author)
+    return User(self._data.author, self._client)
 end
 
 function Message:getAuthor()

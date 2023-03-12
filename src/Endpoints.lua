@@ -5,6 +5,8 @@ endpoints = {
     MESSAGE = '/channels/%s/messages/%s',
     MESSAGES = '/channels/%s/messages',
 
+    GUILD = '/guilds/%s',
+    GUILD_MEMBER = '/guilds/%s/members/%s',
 
     PIN = '/channels/%s/pins/%s',
 }

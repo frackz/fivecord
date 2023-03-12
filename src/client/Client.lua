@@ -8,18 +8,31 @@ function Client:_init(token)
     self._timeout = 250
 
     self._events:handle('ready', function(data)
-        self.bot = User(data.user)
+        self.bot = User(data.user, self)
         self._socket.session = data.session_id
     end)
 
     self._events:handle('guildCreate', function(data)
         local channels = {}
+        local members = {}
+        local roles = {}
+
         for _, v in pairs(data.channels) do
             channels[v.id] = v
         end
 
+        for _, v in pairs(data.members) do
+            members[v.user.id] = v
+        end
+
+        for _, v in pairs(data.roles) do
+            roles[v.id] = v
+        end
+
         self._cache.guilds[data.id] = {
             channels = channels, -- will be updated
+            members = members,
+            roles = roles,
             raw = data -- will be updated
         }
     end)
@@ -65,6 +78,8 @@ function Client:_init(token)
 
         guild.channels[data.id] = nil
     end)
+
+    -- TODO: member leave & member join
 end
 
 function Client:setToken(token)
@@ -78,12 +93,18 @@ end
 function Client:getGuild(id)
     local data, amount = self._cache.guilds[id], 0
     if data == nil then
-        repeat Wait(0) amount = amount + 1 until self._cache.guilds[id] or amount == timeout
-        if amount == timeout then
-            return false, "invalid_guild_or_slow_client"
+        while self._cache.guilds[id] == nil do
+            amount = amount + 1
+            
+            if amount == 250 then
+                return false, "invalid_guild_or_slow_client"
+            end
+
+            Wait(1)
         end
         data = self._cache.guilds[id]
     end
+
     return Guild(data, self)
 end
 
