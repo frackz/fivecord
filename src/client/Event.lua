@@ -2,6 +2,8 @@ local insert, EventHandlers, EventNames = table.insert, {}, {
     ['READY'] = "ready",
     ['HEARTBEAT'] = 'heartbeatRecieved',
     ['SOCKET_MESSAGE'] = 'messageRecieved',
+    ['GATEWAY_CLOSED'] = "gatewayClosed",
+    ['GATEWAY_ERROR'] = "gatewayError",
     ['MESSAGE_CREATE'] = "messageCreate",
 
     -- Caching
@@ -19,6 +21,8 @@ Event = class()
 function Event:_init(client)
     self._events = {}
     self._client = client
+
+    self._error = self._client._error
 end
 
 function Event:emit(name, ...)
@@ -39,7 +43,7 @@ function Event:emit(name, ...)
         
         local call, err = pcall(v, resp)
         if not call then
-            print("Error on emitting event "..name.." because of error: "..err)
+            self:_error("Error on emitting event "..name.." because of error: "..err)
             return table.remove(self._events[name], i)
         end
     end
@@ -66,14 +70,16 @@ function Event:exist(name)
     return false
 end
 
-local first = true
 function EventHandlers.ready(data)
-    if first then
-        return data
-    else
-        repeat Wait(1) until self._client._socket._session ~= nil
-        return data
-    end
+    return data
+end
+
+function EventHandlers.gatewayError(err)
+    return err
+end
+
+function EventHandlers.gatewayClosed(err)
+    return err
 end
 
 function EventHandlers.guildCreate(data)

@@ -10,6 +10,8 @@ function Socket:_init(token, client)
     self._session = nil
     self._reconnect = nil
     self._client = client
+    self._error = self._client._error
+    self._warn = self._client._warn
 
     function open(send, platform, reconnect)
         function self:send(...) send(...) end
@@ -18,7 +20,8 @@ function Socket:_init(token, client)
     end
 
     function err(error)
-        print("Gateway error "..error)
+        self._error('Gateway error: '..error)
+        client._events:emit('GATEWAY_ERROR', error)
     end
 
     function message(msg)
@@ -65,12 +68,14 @@ function Socket:_init(token, client)
     end
 
     function close(err)
+        client._events:emit('GATEWAY_CLOSED', err)
+
         if err == 4004 then
-            return print("Gateway closed, bot information is invalid")
+            return self:_error("Gateway is closed, token is invalid")
         end
 
         self:_reconnect()
-        print("Gateway closed with error code: ".. err.. ". Now reconnecting")
+        self:_warn("Gateway closed with error code ".. err.. ". Reconnecting...")
     end
 
     cord:socket(open, err, message, close)

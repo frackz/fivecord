@@ -39,7 +39,7 @@ function Client:_init(token)
 
     self._events:handle('guildUpdate', function(data)
         if not self._cache.guilds[data.id] then
-            return print("Guild is not cached!")
+            return self:_error('Guild updated, but not cached')
         end
 
         self._cache.guilds[data.id].raw = data
@@ -48,7 +48,7 @@ function Client:_init(token)
     self._events:handle('guildDelete', function(data)
         local guild = self._cache.guilds[data.id]
         if not guild then
-            return print("Guild is not cached")
+            return self:_error('Guild deleted, but not cached')
         end
 
         self._cache.guilds[data.id] = nil
@@ -56,7 +56,7 @@ function Client:_init(token)
 
     self._events:handle('channelCreate', function(data)
         if not self._cache.guilds[data.guild_id] then
-            return print("Guild is not cached")
+            return self:_error('Channel created, but guild is not cached')
         end
         
         self._cache.guilds[data.guild_id].channels[data.id] = data
@@ -64,7 +64,7 @@ function Client:_init(token)
 
     self._events:handle('channelUpdate', function(data)
         if not self._cache.guilds[data.guild_id] or not self._cache.guilds[data.guild_id].channels[data.id] then
-            return print("Guild or channel is not cached")
+            return self:_error('Channel updated, but guild is not cached')
         end
 
         self._cache.guilds[data.guild_id].channels[data.id] = data
@@ -73,7 +73,7 @@ function Client:_init(token)
     self._events:handle('channelDelete', function(data)
         local guild = self._cache.guilds[data.guild_id]
         if not guild then
-            return print("Guild is not cached")
+            return self:_error('Channel deleted, but guild is not cached')
         end
 
         guild.channels[data.id] = nil
@@ -121,4 +121,12 @@ function Client:run()
     
         self._socket = Socket(self._token, self)
     end)
+end
+
+function Client:_error(err)
+    print("\27[31;1m"..err)
+end
+
+function Client:_warn(warn)
+    print("\27[33m"..warn)
 end
