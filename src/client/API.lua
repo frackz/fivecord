@@ -28,7 +28,7 @@ function API:_request(method, endpoint, payload, query)
 end
 
 function API:auth()
-    return self:_request('GET', endpoints.ME)
+    return self:_request('GET', endpoints.USER_ME)
 end
 
 function API:getChannel(channel)
@@ -36,15 +36,15 @@ function API:getChannel(channel)
 end
 
 function API:getMessage(channel, message)
-    return self:_request("GET", format(endpoints.MESSAGE, channel, message))
+    return self:_request("GET", format(endpoints.CHANNEL_MESSAGE, channel, message))
 end
 
 function API:modifyChannel(channel, payload)
-	return self:_request("PATCH", format(endpoints.CHANNEL, channel), {}, payload)
+	return self:_request("PATCH", format(endpoints.CHANNEL_CHANNEL, channel), {}, payload)
 end
 
 function API:deleteChannel(channel)
-    return self:_request("DELETE", format(endpoints.CHANNEL, channel))
+    return self:_request("DELETE", format(endpoints.CHANNEL_CHANNEL, channel))
 end
 
 -- Guild
@@ -58,21 +58,21 @@ end
 
 -- Messages
 function API:sendMessage(channel, data)
-	return self:_request("POST", format(endpoints.MESSAGES, channel), {}, data)
+	return self:_request("POST", format(endpoints.CHANNEL_MESSAGES, channel), {}, data)
 end
 
 function API:pinMessage(channel, message)
-    return self:_request("PUT", format(endpoints.PIN, channel, message))
+    return self:_request("PUT", format(endpoints.CHANNEL_PIN, channel, message))
 end
 
 function API:unpinMessage(channel, message)
-    return self:_request("DELETE", format(endpoints.PIN, channel, message))
+    return self:_request("DELETE", format(endpoints.CHANNEL_PIN, channel, message))
 end
 
 function API:editMessage(channel, message, data)
-    return self:_request("PATCH", format(endpoints.MESSAGE, channel, message), {}, data)
+    return self:_request("PATCH", format(endpoints.CHANNEL_MESSAGE, channel, message), {}, data)
 end
 
 function API:deleteMessage(channel, message)
-    return self:_request("DELETE", format(endpoints.MESSAGE, channel, message))
+    return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE, channel, message))
 end
