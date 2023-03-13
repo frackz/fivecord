@@ -25,9 +25,11 @@ function API:_request(method, endpoint, payload, query)
     end, method, query, payload)
 
     repeat Wait(1) until status ~= nil
-    if status ~= 200 then
+
+    if status ~= 200 and status ~= 201 and status ~= 204 then
         err = false
     end
+    
     return status, json.decode(data), err
 end
 

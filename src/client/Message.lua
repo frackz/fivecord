@@ -56,9 +56,11 @@ function Message:reply(data)
     data['message_reference'] = {message_id = self:getId()}
 
     local _, data, err = self._api:sendMessage(self._channel, data)
+    
     if not err then
         return false
     end
+
     return Message(data, self._client)
 end
 

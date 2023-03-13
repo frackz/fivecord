@@ -27,24 +27,22 @@ function Channel:getMessage(id)
     if data == nil or not err then
         return false, "invalid_message"
     end
-    
+
     return Message(data, self._client)
 end
 
-function Channel:setName(name)
-    local _, _, err = self._api:modifyChannel(self:getId(), {
-        name = name
-    })
+function Channel:modify(data)
+    local _, _, err = self._api:modifyChannel(data)
 
     return err
 end
 
-function Channel:setParent(id)
-    local _, _, err = self._api:modifyChannel(self:getId(), {
-        parent_id = id
-    })
+function Channel:setName(name)
+    return self:modify({name = name})
+end
 
-    return err
+function Channel:setParent(id)
+    return self:modify({parent_id = id})
 end
 
 function Channel:send(data)
@@ -53,7 +51,10 @@ function Channel:send(data)
     end
 
     local _, data, err = self._api:sendMessage(self:getId(), data)
-    if not err then return false end
+
+    if not err then
+        return false
+    end
 
     return Message(data, self._client)
 end
