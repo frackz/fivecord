@@ -15,7 +15,7 @@ FiveCord is developed, and maintained by frackz. If you have any questions/probl
 ```
 
 ## Installation
-Please follow this guide: (link here lol)
+Please follow this guide: (link here)
 
 ## Documentation
 Documentation can be found at: (link here)
