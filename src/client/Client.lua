@@ -13,9 +13,7 @@ function Client:_init(token)
     end)
 
     self._events:handle('guildCreate', function(data)
-        local channels = {}
-        local members = {}
-        local roles = {}
+        local channels, members, roles = {}, {}, {}
 
         for _, v in pairs(data.channels) do
             channels[v.id] = v
@@ -82,14 +80,6 @@ function Client:_init(token)
     -- TODO: member leave & member join
 end
 
-function Client:setToken(token)
-    if type(token) ~= "string" then
-        return false, "token_invalid"
-    end
-
-    self._token = token
-end
-
 function Client:getGuild(id)
     local data, amount = self._cache.guilds[id], 0
     if data == nil then
@@ -116,7 +106,7 @@ function Client:run()
     CreateThread(function()
         local _, data = self._api:auth()
         if data == nil then
-            return print("Information is incorrect.")
+            return self:_error('Failed to authenticate token')
         end
     
         self._socket = Socket(self._token, self)
@@ -124,9 +114,13 @@ function Client:run()
 end
 
 function Client:_error(err)
-    print("\27[31;1m"..err)
+    print("\27[31;1m"..err..'\27[0m')
 end
 
 function Client:_warn(warn)
-    print("\27[33m"..warn)
+    print("\27[33m"..warn..'\27[0m')
 end
+
+exports('new', function(token)
+    return Client(token)
+end)

@@ -1,10 +1,12 @@
 -- Resource Metadata
 fx_version 'cerulean'
-game 'gta5' 
+game 'common' 
 
-author 'frackz <github.com/frackz | frackz.xyz>'
-description 'Example resource'
+name 'FiveCord'
+description 'Discord API wrapper for FXServer'
 version '1.0.0'
+url 'https://github.com/frackz/fivecord'
+author 'frackz <github.com/frackz | frackz.xyz>'
 
 server_scripts {
     'src/Endpoints.lua',
