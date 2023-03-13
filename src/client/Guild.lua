@@ -16,9 +16,11 @@ function Guild:getName()
 end
 
 function Guild:setName(name)
-    return self._api:modifyGuild(self:getId(), {
+    local _, _, err = self._api:modifyGuild(self:getId(), {
         name = name
     })
+
+    return err
 end
 
 function Guild:getUser(id)
@@ -26,8 +28,8 @@ function Guild:getUser(id)
     if member then
         return User(member, self._client)
     else
-        local status, data = self._client._api:getGuildMember(self:getId(), id)
-        if data then
+        local status, data, err = self._client._api:getGuildMember(self:getId(), id)
+        if data and err then
             self._data.members[id] = data
             return User(data, self._client)
         else

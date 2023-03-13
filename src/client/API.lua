@@ -10,6 +10,7 @@ end
 
 function API:_request(method, endpoint, payload, query)
     local status, data
+    local err = true
     
     if not query then query = ''
     else query = json.encode(query) end
@@ -24,7 +25,10 @@ function API:_request(method, endpoint, payload, query)
     end, method, query, payload)
 
     repeat Wait(1) until status ~= nil
-    return status, json.decode(data)
+    if status ~= 200 then
+        err = false
+    end
+    return status, json.decode(data), err
 end
 
 function API:auth()

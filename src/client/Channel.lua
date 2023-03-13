@@ -23,23 +23,28 @@ function Channel:isNSWF()
 end
 
 function Channel:getMessage(id)
-    local _, data = self._api:getMessage(self:getId(), id)
-    if data == nil then
+    local _, data, err = self._api:getMessage(self:getId(), id)
+    if data == nil or not err then
         return false, "invalid_message"
     end
+    
     return Message(data, self._client)
 end
 
 function Channel:setName(name)
-    return self._api:modifyChannel(self:getId(), {
+    local _, _, err = self._api:modifyChannel(self:getId(), {
         name = name
     })
+
+    return err
 end
 
 function Channel:setParent(id)
-    return self._api:modifyChannel(self:getId(), {
+    local _, _, err = self._api:modifyChannel(self:getId(), {
         parent_id = id
     })
+
+    return err
 end
 
 function Channel:send(data)
@@ -47,14 +52,13 @@ function Channel:send(data)
         data = {content = data}
     end
 
-    local status, data = self._api:sendMessage(self:getId(), data)
-    if status ~= 200 then
-        return false, data
-    end
+    local _, data, err = self._api:sendMessage(self:getId(), data)
+    if not err then return false end
 
     return Message(data, self._client)
 end
 
 function Channel:delete()
-    return self._api:deleteChannel(self:getId())
+    local _, _, err = self._api:deleteChannel(self:getId())
+    return err
 end

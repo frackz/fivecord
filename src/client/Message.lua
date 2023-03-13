@@ -39,12 +39,13 @@ end
 
 -- Maintain
 function Message:pin()
-    self._api:pinMessage(self._channel, self:getId())
+    local _, _, err = self._api:pinMessage(self._channel, self:getId())
+    return err
 end
 
 function Message:unpin()
-    self._api:unpinMessage(self._channel, self:getId())
-
+    local _, _, err =  self._api:unpinMessage(self._channel, self:getId())
+    return err
 end
 
 function Message:reply(data)
@@ -54,25 +55,24 @@ function Message:reply(data)
 
     data['message_reference'] = {message_id = self:getId()}
 
-    local status, data = self._api:sendMessage(self._channel, data)
-    if status ~= 200 then
-        return false, data
+    local _, data, err = self._api:sendMessage(self._channel, data)
+    if not err then
+        return false
     end
-
     return Message(data, self._client)
 end
 
 function Message:edit(data)
     local channel = self._channel
     if type(data) == "string" then
-        return self._api:editMessage(channel, self:getId(), {
-            content = data
-        })
-    else
-        return self._api:editMessage(channel, self:getId(), data)
+        data = {content = data}
     end
+
+    local _, _, err = self._api:editMessage(channel, self:getId(), data)
+    return err
 end
 
 function Message:delete()
-    return self._api:deleteMessage(self._channel, self:getId())
+    local _, _, err = self._api:deleteMessage(self:getChannel():getId(), self:getId())
+    return err
 end
