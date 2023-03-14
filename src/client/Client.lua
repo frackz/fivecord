@@ -78,6 +78,9 @@ function Client:_init(token)
     end)
 
     -- TODO: member leave & member join
+    -- TODO: role create & update & delete
+    -- TODO: invite create & remove
+    -- TODO: cache messages
 end
 
 function Client:getGuild(id)
