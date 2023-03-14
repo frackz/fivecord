@@ -6,8 +6,6 @@ function Role:_init(data, client, guild)
     self._guild = guild
 
     self._api = client._api
-
-    print(json.encode(data), guild:getId())
 end
 
 

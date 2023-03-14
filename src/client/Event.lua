@@ -57,7 +57,6 @@ function Event:handle(name, callback)
     if not self:exist(name) then
         return false, "invalid_event"
     end
-
     if self._events[name] then
         return insert(self._events[name], callback)
     end

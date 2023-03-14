@@ -11,8 +11,8 @@ author 'frackz <github.com/frackz | frackz.xyz>'
 server_scripts {
     'src/Endpoints.lua',
     'src/Class.lua',
-    'src/Cache.lua',
     'src/Socket.js',
+    'src/client/Cache.lua',
     'src/client/API.lua',
     'src/client/Socket.lua',
     'src/client/Event.lua',
