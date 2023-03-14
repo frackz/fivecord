@@ -45,3 +45,11 @@ function Guild:getChannel(id)
 
     return Channel(self._data.channels[id], self._client)
 end
+
+function Guild:getRole(id)
+    if not self._data.roles[id] then
+        return false, "invalid_role"
+    end
+
+    return Role(self._data.roles[id], self._client, self)
+end

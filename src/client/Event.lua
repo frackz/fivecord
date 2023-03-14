@@ -14,6 +14,10 @@ local insert, EventHandlers, EventNames = table.insert, {}, {
     ['GUILD_CREATE'] = "guildCreate",
     ['GUILD_UPDATE'] = "guildUpdate",
     ['GUILD_DELETE'] = "guildDelete",
+
+    ['GUILD_ROLE_CREATE'] = "roleCreate",
+    ['GUILD_ROLE_UPDATE'] = "roleUpdate",
+    ['GUILD_ROLE_DELETE'] = "roleDelete",
 }
 
 Event = class()
@@ -68,6 +72,18 @@ function Event:exist(name)
     end
 
     return false
+end
+
+function EventHandlers.roleCreate(data)
+    return data
+end
+
+function EventHandlers.roleUpdate(data)
+    return data
+end
+
+function EventHandlers.roleDelete(data)
+    return data
 end
 
 function EventHandlers.ready(data)

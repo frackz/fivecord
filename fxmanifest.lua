@@ -19,6 +19,7 @@ server_scripts {
     'src/client/User.lua',
     'src/client/Guild.lua',
     'src/client/Message.lua',
+    'src/client/Role.lua',
     'src/client/Channel.lua',
     'src/client/Client.lua',
 

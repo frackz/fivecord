@@ -27,8 +27,6 @@ function Client:_init(token)
             roles[v.id] = v
         end
 
-        print(json.encode(roles))
-
         self._cache.guilds[data.id] = {
             channels = channels, -- will be updated
             members = members,
@@ -77,6 +75,31 @@ function Client:_init(token)
         end
 
         guild.channels[data.id] = nil
+    end)
+
+    self._events:handle('roleCreate', function(data)
+        if not self._cache.guilds[data.guild_id] then
+            return self:_error('Role created, but guild is not cached')
+        end
+        
+        self._cache.guilds[data.guild_id].roles[data.id] = data
+    end)
+
+    self._events:handle('roleUpdate', function(data)
+        if not self._cache.guilds[data.guild_id] or not self._cache.guilds[data.guild_id].channels[data.id] then
+            return self:_error('Role updated, but guild is not cached')
+        end
+
+        self._cache.guilds[data.guild_id].roles[data.id] = data
+    end)
+
+    self._events:handle('roleDelete', function(data)
+        local guild = self._cache.guilds[data.guild_id]
+        if not guild then
+            return self:_error('Role deleted, but guild is not cached')
+        end
+
+        guild.roles[data.id] = nil
     end)
 
     -- TODO: member leave & member join
