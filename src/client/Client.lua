@@ -27,6 +27,8 @@ function Client:_init(token)
             roles[v.id] = v
         end
 
+        print(json.encode(roles))
+
         self._cache.guilds[data.id] = {
             channels = channels, -- will be updated
             members = members,

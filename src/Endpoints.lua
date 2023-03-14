@@ -13,8 +13,6 @@ endpoints = {
 	CHANNEL_PERMISSION = "/channels/%s/permissions/%s",
 	CHANNEL_PIN = "/channels/%s/pins/%s",
 	CHANNEL_PINS = "/channels/%s/pins",
-	CHANNEL_RECIPIENT = "/channels/%s/recipients/%s",
-	CHANNEL_TYPING = "/channels/%s/typing",
 	CHANNEL_WEBHOOKS = "/channels/%s/webhooks",
 
     GUILD = '/guilds/%s',
