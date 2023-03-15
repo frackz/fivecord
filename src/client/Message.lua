@@ -74,6 +74,12 @@ function Message:edit(data)
     return err
 end
 
+function Message:react(emoji)
+    local status, _, err = self._api:reactMessage(self:getChannel():getId(), self:getId(), 'U+1F600')
+    print(status)
+    return err
+end
+
 function Message:delete()
     local _, _, err = self._api:deleteMessage(self:getChannel():getId(), self:getId())
     return err

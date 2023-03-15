@@ -67,6 +67,10 @@ function API:sendMessage(channel, data)
 	return self:_request("POST", format(endpoints.CHANNEL_MESSAGES, channel), {}, data)
 end
 
+function API:reactMessage(channel, message, emoji)
+    return self:_request("PUT", format(endpoints.CHANNEL_MESSAGE_REACTION_ME, channel, message, emoji))
+end
+
 function API:pinMessage(channel, message)
     return self:_request("PUT", format(endpoints.CHANNEL_PIN, channel, message))
 end
