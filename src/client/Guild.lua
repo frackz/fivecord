@@ -4,7 +4,6 @@ function Guild:_init(data, client)
     self._data = data
     self._client = client
     self._api = client._api
-
 end
 
 function Guild:getId()

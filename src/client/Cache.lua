@@ -4,6 +4,8 @@ function Cache:_init(client)
     self._client = client
     self._events = self._client._events
     self._guilds = self._client._cache.guilds
+    self._events = {}
+    function self:_error(...) self._client:_error(...) end
 
     function self:_getGuild(guild)
         return self._guilds[guild]
@@ -21,9 +23,8 @@ function Cache:_init(client)
         return self:_getGuild(guild) ~= nil
     end
 
-    function self:_handle(...)
-        --print(self._events)
-        self._events:handle(...)
+    function self:_handle(event, func)
+        self._events[event] = func
     end
 
     self:_handle('ready', function(data)
@@ -58,11 +59,11 @@ function Cache:_init(client)
     end)
 
     self:_handle('channelCreate', function(data)
-        if not self:_isCached(data.id) then
+        if not self:_isCached(data.guild_id) then
             return self:_error('Channel created, but guild is not cached')
         end
         
-        self:_getGuild(data.id).channels[data.id] = data
+        self:_getGuild(data.guild_id).channels[data.id] = data
     end)
 
     self:_handle('channelUpdate', function(data)
@@ -104,5 +105,8 @@ function Cache:_init(client)
 
         self:_getGuild(data.guild_id).roles[data.id] = nil
     end)
+end
 
+function Cache:_emit(name, ...)
+    self._events[name](...)
 end

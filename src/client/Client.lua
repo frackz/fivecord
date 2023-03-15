@@ -3,10 +3,10 @@ Client = class()
 function Client:_init(token)
     self._token = token
     self._api = API(token, self)
-    self._events = Event(self)
     self._cache = { guilds = {} }
     self._timeout = 250
     self._cached = Cache(self)
+    self._events = Event(self)
 
     -- TODO: member leave & member join
     -- TODO: invite create & remove

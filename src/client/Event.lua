@@ -25,26 +25,27 @@ Event = class()
 function Event:_init(client)
     self._events = {}
     self._client = client
+    self._cache = self._client._cached
 
     self._error = self._client._error
 end
 
 function Event:emit(name, ...)
+    local resp = nil
     if not self._events[name] then
         if not EventNames[name] then
             return
         end
 
         name = EventNames[name]
+        resp = EventHandlers[name](..., self)
         if not self._events[name] then
             return
         end
     end
 
     for i, v in pairs(self._events[name]) do
-        local resp = EventHandlers[name](..., self._client)
         if resp == "DO_NOT_CALL" then return end
-        
         local call, err = pcall(v, resp)
         if not call then
             self:_error("Error on emitting event "..name.." because of error: "..err)
@@ -73,19 +74,23 @@ function Event:exist(name)
     return false
 end
 
-function EventHandlers.roleCreate(data)
-    return data
+function EventHandlers.roleCreate(data, self)
+    self._cache:_emit('roleCreate', data, self._client)
+    return Role(data, self._client)
 end
 
-function EventHandlers.roleUpdate(data)
-    return data
+function EventHandlers.roleUpdate(data, self)
+    self._cache:_emit('roleUpdate', data, self._client)
+    return Role(data, self._client)
 end
 
 function EventHandlers.roleDelete(data)
+    self._cache:_emit('roleDelete', data, self._client)
     return data
 end
 
-function EventHandlers.ready(data)
+function EventHandlers.ready(data, self)
+    self._cache:_emit('ready', data, self._client)
     return data
 end
 
@@ -97,28 +102,32 @@ function EventHandlers.gatewayClosed(err)
     return err
 end
 
-function EventHandlers.guildCreate(data)
-    return data
+function EventHandlers.guildCreate(data, self)
+    self._cache:_emit('guildCreate', data, self._client)
+    return Guild(data, self._client)
 end
 
 function EventHandlers.messageRecieved(data)
     return data
 end
 
-function EventHandlers.guildUpdate(data)
-    return data
+function EventHandlers.guildUpdate(data, self)
+    self._cache:_emit('guildUpdate', data, self._client)
+    return Guild(data, self._client)
 end
 
 function EventHandlers.guildDelete(data)
     return data
 end
 
-function EventHandlers.channelCreate(data)
-    return data
+function EventHandlers.channelCreate(data, self)
+    self._cache:_emit('channelCreate', data, self._client)
+    return Channel(data, self._client)
 end
 
-function EventHandlers.channelUpdate(data)
-    return data
+function EventHandlers.channelUpdate(data, self)
+    self._cache:_emit('channelUpdate', data, self._client)
+    return Channel(data, self._client)
 end
 
 function EventHandlers.channelDelete(data)
@@ -129,9 +138,9 @@ function EventHandlers:heartbeatRecieved()
     return
 end
 
-function EventHandlers.messageCreate(data, client)
+function EventHandlers.messageCreate(data, self)
     if data.content == "" then
         return "DO_NOT_CALL"
     end
-    return Message(data, client)
+    return Message(data, self._client)
 end
