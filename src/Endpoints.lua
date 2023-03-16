@@ -1,3 +1,4 @@
+--- All the endpoints used within the Client API
 endpoints = {
     USER_ME = '/users/@me',
     

@@ -5,7 +5,9 @@ function Cache:_init(client)
     self._events = self._client._events
     self._guilds = self._client._cache.guilds
     self._events = {}
+
     function self:_error(...) self._client:_error(...) end
+    function self:_warn(...) self._client:_warn(...) end
 
     function self:_getGuild(guild)
         return self._guilds[guild]
@@ -13,6 +15,10 @@ function Cache:_init(client)
 
     function self:_isChannel(guild, channel)
         return self:_getGuild(guild).channels[channel] ~= nil
+    end
+
+    function self:_isMessage(guild, message)
+        return self:_getGuild(guild).messages[message] ~= nil
     end
 
     function self:_isRole(guild, role)
@@ -31,6 +37,26 @@ function Cache:_init(client)
         self._client.bot = User(data.user, self)
         self._client._socket.session = data.session_id
     end)
+    
+    self:_handle('messageCreate', function(data)
+        if not self:_isCached(data.guild_id) then
+            return self:_error('Message created, but guild is not cached')
+        end
+
+        self:_getGuild(data.guild_id).messages[data.id] = {
+            raw = data,
+            reactions = {},
+            isPinned = false
+        }
+    end)
+
+    self:_handle('messageUpdate', function(data)
+        if not self:_isCached(data.guild_id) or not self:_isMessage(data.guild_id, data.id) then
+            return self:_warn('Message updated, but guild or message is not cached')
+        end
+
+        self:_getGuild(data.guild_id).messages[data.id]['raw'] = data
+    end)
 
     self:_handle('guildCreate', function(data)
         local channels, members, roles = {}, {}, {}
@@ -39,7 +65,7 @@ function Cache:_init(client)
         for _, v in pairs(data.members) do members[v.user.id] = v end
         for _, v in pairs(data.roles) do roles[v.id] = v end
 
-        self._guilds[data.id] = { channels = channels, members = members, roles = roles, raw = data }
+        self._guilds[data.id] = { channels = channels, members = members, roles = roles, messages = {}, raw = data}
     end)
 
     self:_handle('guildUpdate', function(data)

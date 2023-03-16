@@ -10,11 +10,11 @@ end
 
 -- Getters
 function Message:getChannel()
-    return self._client:getGuild(self._data.guild_id):getChannel(self._data.channel_id)
+    return self:getGuild():getChannel(self._channel, self._client, self._data.guild_id)
 end
 
 function Message:getGuild()
-    return self._data.guild_id
+    return self._client:getGuild(self._data.guild_id)
 end
 
 function Message:getUser()
@@ -65,22 +65,20 @@ function Message:reply(data)
 end
 
 function Message:edit(data)
-    local channel = self._channel
     if type(data) == "string" then
         data = {content = data}
     end
 
-    local _, _, err = self._api:editMessage(channel, self:getId(), data)
+    local _, _, err = self._api:editMessage(self._channel, self:getId(), data)
     return err
 end
 
 function Message:react(emoji)
-    local status, _, err = self._api:reactMessage(self:getChannel():getId(), self:getId(), 'U+1F600')
-    print(status)
+    local status, _, err = self._api:reactMessage(self._channel, self:getId(), emoji)
     return err
 end
 
 function Message:delete()
-    local _, _, err = self._api:deleteMessage(self:getChannel():getId(), self:getId())
+    local _, _, err = self._api:deleteMessage(self._channel, self:getId())
     return err
 end

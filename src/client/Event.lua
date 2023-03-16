@@ -4,9 +4,11 @@ local insert, EventHandlers, EventNames = table.insert, {}, {
     ['SOCKET_MESSAGE'] = 'messageRecieved',
     ['GATEWAY_CLOSED'] = "gatewayClosed",
     ['GATEWAY_ERROR'] = "gatewayError",
-    ['MESSAGE_CREATE'] = "messageCreate",
 
     -- Caching
+    ['MESSAGE_CREATE'] = "messageCreate",
+    ['MESSAGE_UPDATE'] = "messageUpdate",
+
     ['CHANNEL_CREATE'] = "channelCreate",
     ['CHANNEL_UPDATE'] = "channelUpdate",
     ['CHANNEL_DELETE'] = "channelDelete",
@@ -74,6 +76,10 @@ function Event:exist(name)
     return false
 end
 
+function EventHandlers.messageUpdate(data, self)
+    self._cache:_emit('messageUpdate', data, self._client)
+end
+
 function EventHandlers.roleCreate(data, self)
     self._cache:_emit('roleCreate', data, self._client)
     return Role(data, self._client)
@@ -122,12 +128,12 @@ end
 
 function EventHandlers.channelCreate(data, self)
     self._cache:_emit('channelCreate', data, self._client)
-    return Channel(data, self._client)
+    return Channel(data, self._client, data.guild_id)
 end
 
 function EventHandlers.channelUpdate(data, self)
     self._cache:_emit('channelUpdate', data, self._client)
-    return Channel(data, self._client)
+    return Channel(data, self._client, data.guild_id)
 end
 
 function EventHandlers.channelDelete(data)
@@ -142,5 +148,6 @@ function EventHandlers.messageCreate(data, self)
     if data.content == "" then
         return "DO_NOT_CALL"
     end
+    self._cache:_emit('messageCreate', data, self._client)
     return Message(data, self._client)
 end

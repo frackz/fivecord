@@ -1,9 +1,10 @@
 Channel = class()
 
-function Channel:_init(data, client)
+function Channel:_init(data, client, guild)
     self._data = data
     self._client = client
     self._api = client._api
+    self._guild = guild
 end
 
 function Channel:getName()
@@ -15,7 +16,7 @@ function Channel:getId()
 end
 
 function Channel:getGuild()
-    return self._data.guild_id
+    return self._client:getGuild(self._guild)
 end
 
 function Channel:isNSWF()
@@ -23,6 +24,11 @@ function Channel:isNSWF()
 end
 
 function Channel:getMessage(id)
+    local message = (self:getGuild()._data.messages[id] or {raw = nil}).raw
+    if message then
+        return Message(message, self._client)
+    end
+    
     local _, data, err = self._api:getMessage(self:getId(), id)
     if data == nil or not err then
         return false, "invalid_message"

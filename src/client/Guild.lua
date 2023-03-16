@@ -42,7 +42,7 @@ function Guild:getChannel(id)
         return false, "invalid_channel"
     end
 
-    return Channel(self._data.channels[id], self._client)
+    return Channel(self._data.channels[id], self._client, self:getId())
 end
 
 function Guild:getRole(id)
