@@ -54,7 +54,6 @@ function API:deleteChannel(channel)
     return self:_request("DELETE", format(endpoints.CHANNEL_CHANNEL, channel))
 end
 
--- Guild
 function API:getGuildMember(guild, member)
     return self:_request("GET", format(endpoints.GUILD_MEMBER, guild, member))
 end
@@ -63,7 +62,6 @@ function API:modifyGuild(guild, payload)
     return self:_request("PATCH", format(endpoints.GUILD, guild), {}, payload)
 end
 
--- Messages
 function API:sendMessage(channel, data)
 	return self:_request("POST", format(endpoints.CHANNEL_MESSAGES, channel), {}, data)
 end
@@ -87,8 +85,6 @@ end
 function API:deleteReact(channel, message, emoji)
     return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE_REACTION_ME, channel, message, emoji))
 end
-
---CHANNEL_MESSAGE_REACTION_USER
 
 function API:deleteUserReact(channel, message, emoji, user)
     return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE_REACTION_USER, channel, message, emoji, user))
