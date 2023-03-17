@@ -73,8 +73,9 @@ function Message:edit(data)
     return err
 end
 
-function Message:react(emoji)
-    local status, _, err = self._api:reactMessage(self._channel, self:getId(), emoji)
+function Message:react(emoji, name)
+    local status, _, err = self._api:reactMessage(self._channel, self:getId(), emoji..':'..name)
+    print(status)
     return err
 end
 

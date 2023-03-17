@@ -11,7 +11,9 @@ end
 function API:_request(method, endpoint, payload, query)
     local status, data
     local err = true
-    
+
+    print(endpoint)
+
     if not query then query = ''
     else query = json.encode(query) end
 
@@ -19,7 +21,11 @@ function API:_request(method, endpoint, payload, query)
     payload['Authorization'] = 'Bot '..self._token
     payload['Content-Type'] = 'application/json'
     payload['User-Agent'] = "FiveCord (https://github.com/frackz/fivecord)"
-
+    if #query > 0 then
+        payload['Content-Length'] = tostring(#payload)
+    end
+    
+    print(json.encode(payload))
     PerformHttpRequest(URL .. endpoint, function (_, __, ___)
         status, data = _, __
     end, method, query, payload)
@@ -65,6 +71,10 @@ end
 -- Messages
 function API:sendMessage(channel, data)
 	return self:_request("POST", format(endpoints.CHANNEL_MESSAGES, channel), {}, data)
+end
+
+function API:getReactions(channel, message, emoji)
+    return self:_request("GET", format(endpoints.CHANNEL_MESSAGE_REACTION_ME, channel, message))
 end
 
 function API:reactMessage(channel, message, emoji)

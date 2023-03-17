@@ -40,7 +40,7 @@ function Cache:_init(client)
     
     self:_handle('messageCreate', function(data)
         if not self:_isCached(data.guild_id) then
-            return self:_error('Message created, but guild is not cached')
+            return -- self:_error('Message created, but guild is not cached')
         end
 
         self:_getGuild(data.guild_id).messages[data.id] = {
@@ -51,8 +51,8 @@ function Cache:_init(client)
     end)
 
     self:_handle('messageUpdate', function(data)
-        if not self:_isCached(data.guild_id) or not self:_isMessage(data.guild_id, data.id) then
-            return self:_warn('Message updated, but guild or message is not cached')
+        if not self:_isCached(data.guild_id) and self:_isMessage(data.guild_id, data.id) then
+            return -- self:_warn('Message updated, but guild or message is not cached')
         end
 
         self:_getGuild(data.guild_id).messages[data.id]['raw'] = data
