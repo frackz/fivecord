@@ -7,20 +7,20 @@ function Client:_init(token)
     self._timeout = 250
     self._cached = Cache(self)
     self._events = Event(self)
-
-    -- TODO: member leave & member join
-    -- TODO: invite create & remove
-    -- TODO: cache messages
 end
 
+--- Get a guild by id
+--- @param id string
+--- @return table | boolean
 function Client:getGuild(id)
     local data, amount = self._cache.guilds[id], 0
     if data == nil then
+        -- wait for guilds to be loaded in, if ain't after 250 milliseconds the request will be discarded.
         while self._cache.guilds[id] == nil do
             amount = amount + 1
             
             if amount == 250 then
-                return false, "invalid_guild_or_slow_client"
+                return false
             end
 
             Wait(1)
@@ -31,10 +31,12 @@ function Client:getGuild(id)
     return Guild(data, self)
 end
 
+--- Handle a event
 function Client:on(...)
-    self._events:handle(...)
+    return self._events:handle(...)
 end
 
+--- Run the bot, and start the socket, etc...
 function Client:run()
     CreateThread(function()
         local _, data = self._api:auth()

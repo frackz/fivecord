@@ -32,6 +32,9 @@ function Event:_init(client)
     self._error = self._client._error
 end
 
+--- Emit a event
+--- @param name string
+--- @param ... table
 function Event:emit(name, ...)
     local resp = nil
     if not self._events[name] then
@@ -51,11 +54,15 @@ function Event:emit(name, ...)
         local call, err = pcall(v, resp)
         if not call then
             self:_error("Error on emitting event "..name.." because of error: "..err)
-            return table.remove(self._events[name], i)
+            
+            table.remove(self._events[name], i)
         end
     end
 end
 
+--- Handle a event
+--- @param name string
+--- @param callback function
 function Event:handle(name, callback)
     if not self:exist(name) then
         return false, "invalid_event"
@@ -66,6 +73,9 @@ function Event:handle(name, callback)
     self._events[name] = {callback}
 end
 
+--- Check if a event exists
+--- @param name string
+--- @return boolean
 function Event:exist(name)
     for _, v in pairs(EventNames) do
         if v == name then

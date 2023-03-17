@@ -95,7 +95,7 @@ function Message:edit(data)
     return err
 end
 
---- React to message
+--- React to the message
 --- @param data string | table
 --- @return boolean
 function Message:react(emoji)
@@ -103,19 +103,26 @@ function Message:react(emoji)
     return err
 end
 
---deleteUserReact
-function Message:deleteAllReactions()
-    local status, _, err = self._api:deleteAllReactions(self._channel, self:getId())
+--- Delete all reactions from message
+--- @return boolean
+function Message:clearReactions()
+    local _, _, err = self._api:deleteAllReactions(self._channel, self:getId())
     return err
 end
 
+--- Delete all reactions
+--- @param emoji table | string
+--- @return boolean
 function Message:deleteReactions(emoji)
-    local status, _, err = self._api:deleteReactions(self._channel, self:getId(), emoji)
+    local _, _, err = self._api:deleteReactions(self._channel, self:getId(), emoji)
     return err
 end
 
+--- Get all reactions from specific emoji
+--- @param emoji table | string
+--- @return table | boolean
 function Message:getReactions(emoji)
-    local status, data, err = self._api:getReactions(self._channel, self:getId(), emoji)
+    local _, data, err = self._api:getReactions(self._channel, self:getId(), emoji)
     if not err then
         return err
     end
@@ -128,16 +135,26 @@ function Message:getReactions(emoji)
     return value
 end
 
+--- Delete a user's reaction from the message
+--- @param emoji table | string
+--- @param user table | string
+--- @return boolean
 function Message:deleteUserReaction(user, emoji)
-    local status, _, err = self._api:deleteUserReact(self._channel, self:getId(), emoji, user)
+    local _, _, err = self._api:deleteUserReact(self._channel, self:getId(), emoji, user)
     return err
 end
 
+--- Delete the bot's reaction from the message
+--- @param emoji table | string
+--- @return boolean
 function Message:removeReaction(emoji)
-    local status, _, err = self._api:deleteReact(self._channel, self:getId(), emoji)
+    local _, _, err = self._api:deleteReact(self._channel, self:getId(), emoji)
     return err
 end
 
+--- Delete the message
+--- @param emoji table | string
+--- @return boolean
 function Message:delete()
     local _, _, err = self._api:deleteMessage(self._channel, self:getId())
     return err
