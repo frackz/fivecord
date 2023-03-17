@@ -69,13 +69,30 @@ function API:sendMessage(channel, data)
 end
 
 function API:getReactions(channel, message, emoji)
-    return self:_request("GET", format(endpoints.CHANNEL_MESSAGE_REACTION_ME, channel, message))
+    return self:_request("GET", format(endpoints.CHANNEL_MESSAGE_REACTION, channel, message, emoji))
+end 
+
+function API:deleteReactions(channel, message, emoji)
+    return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE_REACTION, channel, message, emoji))
 end
+
+function API:deleteAllReactions(channel, message)
+    return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE_REACTIONS, channel, message))
+end 
 
 function API:reactMessage(channel, message, emoji)
     return self:_request("PUT", format(endpoints.CHANNEL_MESSAGE_REACTION_ME, channel, message, emoji))
 end
 
+function API:deleteReact(channel, message, emoji)
+    return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE_REACTION_ME, channel, message, emoji))
+end
+
+--CHANNEL_MESSAGE_REACTION_USER
+
+function API:deleteUserReact(channel, message, emoji, user)
+    return self:_request("DELETE", format(endpoints.CHANNEL_MESSAGE_REACTION_USER, channel, message, emoji, user))
+end
 function API:pinMessage(channel, message)
     return self:_request("PUT", format(endpoints.CHANNEL_PIN, channel, message))
 end

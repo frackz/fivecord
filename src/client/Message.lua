@@ -78,6 +78,41 @@ function Message:react(emoji)
     return err
 end
 
+--deleteUserReact
+function Message:deleteAllReactions()
+    local status, _, err = self._api:deleteAllReactions(self._channel, self:getId())
+    return err
+end
+
+function Message:deleteReactions(emoji)
+    local status, _, err = self._api:deleteReactions(self._channel, self:getId(), emoji)
+    return err
+end
+
+function Message:getReactions(emoji)
+    local status, data, err = self._api:getReactions(self._channel, self:getId(), emoji)
+    if not err then
+        return err
+    end
+
+    local value = {}
+    for k,v in pairs(data) do
+        table.insert(value, User(v, self._client))
+    end
+
+    return value
+end
+
+function Message:deleteUserReaction(user, emoji)
+    local status, _, err = self._api:deleteUserReact(self._channel, self:getId(), emoji, user)
+    return err
+end
+
+function Message:removeReaction(emoji)
+    local status, _, err = self._api:deleteReact(self._channel, self:getId(), emoji)
+    return err
+end
+
 function Message:delete()
     local _, _, err = self._api:deleteMessage(self._channel, self:getId())
     return err
