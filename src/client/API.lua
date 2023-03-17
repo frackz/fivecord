@@ -12,8 +12,6 @@ function API:_request(method, endpoint, payload, query)
     local status, data
     local err = true
 
-    print(endpoint)
-
     if not query then query = ''
     else query = json.encode(query) end
 
@@ -21,11 +19,8 @@ function API:_request(method, endpoint, payload, query)
     payload['Authorization'] = 'Bot '..self._token
     payload['Content-Type'] = 'application/json'
     payload['User-Agent'] = "FiveCord (https://github.com/frackz/fivecord)"
-    if #query > 0 then
-        payload['Content-Length'] = tostring(#payload)
-    end
-    
-    print(json.encode(payload))
+    payload['Content-Length'] = tostring(#(query or {}))
+
     PerformHttpRequest(URL .. endpoint, function (_, __, ___)
         status, data = _, __
     end, method, query, payload)
